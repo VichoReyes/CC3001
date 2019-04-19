@@ -5,22 +5,22 @@ class Main {
     static boolean discarded[][][] = new boolean[9][9][10]; // always skip the first one
 
     public static void main(String[] args) {
-        getSudoku();
+        get_sudoku();
         int filled_before_backtracking = 0;
         while (true) {
-            step3();
-            int just_filled = step4();
+            discard_when_possible();
+            int just_filled = fill_cells();
             if (just_filled == 0) {
                 break;
             }
             filled_before_backtracking += just_filled;
         }
         backtracking(0);
-        printSudoku();
+        print_sudoku();
         System.out.println(filled_before_backtracking);
     }
 
-    static void step3 () {
+    static void discard_when_possible () {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 int num = board[i][j];
@@ -56,12 +56,12 @@ class Main {
         }
     }
 
-    static int step4() {
+    static int fill_cells() {
         int filled = 0;
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 if (board[i][j] == 0) {
-                    if (replaceIfPossible(i, j)) {
+                    if (replace_if_possible(i, j)) {
                         filled++;
                     }
                 }
@@ -73,18 +73,18 @@ class Main {
     // checks if the spot has only one possible answer left
     // in that case, sets the spot to that answer and returns true
     // otherwise, returns false
-    static boolean replaceIfPossible(int row, int column) {
+    static boolean replace_if_possible(int row, int column) {
         int candidate = 0; // silence "might now have been initialized" error
-        boolean foundCandidate = false;
+        boolean found_candidate = false;
         for (int i = 1; i <= 9; i++) {
-           if (!discarded[row][column][i] && foundCandidate) {
+           if (!discarded[row][column][i] && found_candidate) {
                return false;
            } else if (!discarded[row][column][i]) {
                candidate = i;
-               foundCandidate = true;
+               found_candidate = true;
            }
         }
-        if (!foundCandidate) {
+        if (!found_candidate) {
             System.out.println("there was a problem");
             System.exit(1);
         }
@@ -92,7 +92,7 @@ class Main {
         return true;
     }
 
-    static void getSudoku() {
+    static void get_sudoku() {
         Scanner sc = new Scanner(System.in);
 
         for (int i = 0; i < 9; i++) {
@@ -103,7 +103,7 @@ class Main {
         sc.close();
     }
 
-    static void printSudoku() {
+    static void print_sudoku() {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 System.out.printf("%d ", board[i][j]);
