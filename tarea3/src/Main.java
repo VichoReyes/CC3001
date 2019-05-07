@@ -10,10 +10,8 @@ class Main {
 
     static void CursosPorOrden() {
         inicializarEstructuras();
-        for (int i = 1; i < cursos.length; i++) {
-            System.out.printf("el curso %d tiene flechas a: ", cursos[i].id);
-            NodoCurso.imprimir("%d ", cursos[i].provee);
-            System.out.println();
+        while (listas[0] != null) {
+            cursar(listas[0].valor);
         }
     }
 
@@ -32,8 +30,7 @@ class Main {
         }
 
         for (int i = 1; i < cursos.length; i++) {
-            int len = NodoCurso.length(cursos[i].provee);
-            System.out.println(len);
+            int len = cursos[i].requisitos.length;
             listas[len] = NodoCurso.insertar(listas[len], cursos[i]);
         }
     }
@@ -53,6 +50,22 @@ class Main {
             cursos[curso.requisitos[i]].insertarProvee(curso);
         }
     }
+
+    static void cursar(Curso curso) {
+        System.out.println(curso.id);
+        for (NodoCurso c = curso.provee; c != null; c = c.sgte) {
+            for (int i = 1; i < listas.length; i++) {
+                for (NodoCurso d = listas[i]; d != null ; d = d.sgte) {
+                    if (c.valor.id == d.valor.id) {
+                        listas[i-1] = NodoCurso.insertar(listas[i-1], d.valor);
+                        listas[i] = NodoCurso.eliminar(listas[i], d.valor);
+                        break;
+                    }
+                }
+            }
+        }
+        listas[0] = NodoCurso.eliminar(listas[0], curso);
+    }
 }
 
 class NodoCurso {
@@ -66,6 +79,22 @@ class NodoCurso {
 
     public static NodoCurso insertar(NodoCurso cola, Curso curso) {
         return new NodoCurso(curso, cola);
+    }
+
+    public static NodoCurso eliminar(NodoCurso lista, Curso curso) {
+        if (lista == null) {
+            return null;
+        }
+        if (lista.valor.id == curso.id) {
+            return lista.sgte;
+        }
+        for (NodoCurso aux = lista; aux.sgte != null; aux = aux.sgte) {
+            if (aux.sgte.valor.id == curso.id) {
+                aux.sgte = aux.sgte.sgte;
+                return lista;
+            }
+        }
+        return lista;
     }
 
     public static void imprimir(String fmt, NodoCurso cosas) {
