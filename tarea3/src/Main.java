@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
 class Main {
-    static NodoCurso[] listas;
+    static Curso[] listas;
     static Curso[] cursos;
 
     public static void main(String[] args) {
@@ -11,7 +11,7 @@ class Main {
     static void CursosPorOrden() {
         inicializarEstructuras();
         while (listas[0] != null) {
-            cursar(listas[0].valor);
+            cursar(listas[0]);
         }
     }
 
@@ -19,111 +19,89 @@ class Main {
         Scanner sc = new Scanner(System.in);
         int n = Integer.parseInt(sc.nextLine());
         cursos = new Curso[n+1];
-        listas = new NodoCurso[n];
+        listas = new Curso[n];
         for (int i = 0; i < n; i++) {
             GuardarCurso(sc);
         }
         sc.close();
-
-        for (int i = 1; i < cursos.length; i++) {
-            marcarRequisitos(cursos[i]);
-        }
-
-        for (int i = 1; i < cursos.length; i++) {
-            int len = cursos[i].requisitos.length;
-            listas[len] = NodoCurso.insertar(listas[len], cursos[i]);
-        }
     }
 
     static void GuardarCurso(Scanner sc) {
         String linea[] = sc.nextLine().split(" ");
         int id = Integer.parseInt(linea[0]);
-        int requisitos[] = new int[linea.length-1];
-        for (int i = 0; i < requisitos.length; i++) {
-            requisitos[i] = Integer.parseInt(linea[i+1]);
+        Curso.generar(id);
+        for (int i = 1; i < linea.length; i++) {
+            int requisito = Integer.parseInt(linea[i]);
+            Curso.generar(requisito);
+            Curso.insertarProvee(cursos[requisito], cursos[id]);
         }
-        cursos[id] = new Curso(id, requisitos);
-    }
-
-    static void marcarRequisitos(Curso curso) {
-        for (int i = 0; i < curso.requisitos.length; i++) {
-            cursos[curso.requisitos[i]].insertarProvee(curso);
-        }
+        int k = linea.length - 1;
+        cursos[id].requisitos = k;
+        listas[k] = cursos[id].insertarEnLista(listas[k]);
     }
 
     static void cursar(Curso curso) {
         System.out.println(curso.id);
-        for (NodoCurso c = curso.provee; c != null; c = c.sgte) {
-            for (int i = 1; i < listas.length; i++) {
-                for (NodoCurso d = listas[i]; d != null ; d = d.sgte) {
-                    if (c.valor.id == d.valor.id) {
-                        listas[i-1] = NodoCurso.insertar(listas[i-1], d.valor);
-                        listas[i] = NodoCurso.eliminar(listas[i], d.valor);
-                        break;
-                    }
-                }
-            }
+        for (ListaProvee c = curso.provee; c != null; c = c.sgte) {
+            int k = c.valor.requisitos;
+            listas[k] = c.valor.eliminarDeLista(listas[k]);
+            listas[k-1] = c.valor.insertarEnLista(listas[k-1]);
+            c.valor.requisitos--;
         }
-        listas[0] = NodoCurso.eliminar(listas[0], curso);
+        listas[0] = curso.eliminarDeLista(listas[0]);
     }
 }
 
-class NodoCurso {
+class ListaProvee {
     Curso valor;
-    NodoCurso sgte;
+    ListaProvee sgte;
 
-    public NodoCurso(Curso valor, NodoCurso sgte) {
+    public ListaProvee(Curso valor, ListaProvee sgte) {
         this.valor = valor;
         this.sgte = sgte;
-    }
-
-    public static NodoCurso insertar(NodoCurso cola, Curso curso) {
-        return new NodoCurso(curso, cola);
-    }
-
-    public static NodoCurso eliminar(NodoCurso lista, Curso curso) {
-        if (lista == null) {
-            return null;
-        }
-        if (lista.valor.id == curso.id) {
-            return lista.sgte;
-        }
-        for (NodoCurso aux = lista; aux.sgte != null; aux = aux.sgte) {
-            if (aux.sgte.valor.id == curso.id) {
-                aux.sgte = aux.sgte.sgte;
-                return lista;
-            }
-        }
-        return lista;
-    }
-
-    public static void imprimir(String fmt, NodoCurso cosas) {
-        for (NodoCurso aux = cosas; aux != null; aux = aux.sgte) {
-            System.out.printf(fmt, aux.valor.id);
-        }
-    }
-
-    public static int length(NodoCurso lista) {
-        int len = 0;
-        for (NodoCurso aux = lista; aux != null; aux = aux.sgte) {
-            len++;
-        }
-        return len;
     }
 }
 
 class Curso {
     int id;
-    NodoCurso provee;
-    int []requisitos;
+    ListaProvee provee;
+    Curso siguiente;
+    Curso anterior;
+    int requisitos;
 
-    public Curso(int id, int []requisitos) {
+    private Curso(int id) {
         this.id = id;
-        this.provee = null;
-        this.requisitos = requisitos;
     }
 
-    public void insertarProvee(Curso curso) {
-        this.provee = NodoCurso.insertar(this.provee, curso);
+    public Curso insertarEnLista(Curso lista) {
+        siguiente = lista;
+        if (siguiente != null) {
+            siguiente.anterior = this;
+        }
+        anterior = null;
+        return this;
+    }
+
+    public Curso eliminarDeLista(Curso lista) {
+        if (siguiente != null) {
+            siguiente.anterior = anterior;
+        }
+        if (anterior != null) {
+            anterior.siguiente = siguiente;
+            return lista;
+        } else {
+            return siguiente;
+        }
+    }
+
+    public static void generar(int id) {
+        if (Main.cursos[id] != null)
+            return;
+
+        Main.cursos[id] = new Curso(id);
+    }
+
+    public static void insertarProvee(Curso requisito, Curso proveido) {
+        requisito.provee = new ListaProvee(proveido, requisito.provee);
     }
 }

@@ -22,7 +22,49 @@ El algoritmo pedido consiste en cuatro pasos
 
 4. Sacar el curso recién impreso de `listas[0]` y repetir la operación del paso 3 hasta que no queden más cursos.
 
+## Paso 1
+
+En el proceso de crear una lista de punteros que contenga los cursos que tienen a `c` como requisito, hay un obstáculo que se debe enfrentar: Puede que estos cursos no hayan sido mencionados por el _input_ todavía. Es decir, si el _input_ es
+
+```
+2 1
+1
+```
+
+entonces no es posible insertar el curso 2 en la lista de cursos que el curso 1 provee así como así, ya que el nodo correspondiente al curso 1 no ha sido creado todavía. Por lo tanto, se debe crear el curso 1 aunque no se tenga toda la información al respecto.
+En general, al procesar cada línea se deben crear todos los cursos mencionados en caso de que no existan, ya que no se tiene la garantía de que ninguno de ellos haya sido mencionado antes. Luego se deben añadir cursos a la lista de cursos que los requieren dinámicamente a medida que se lee el resto del _input_.
+
+## Paso 2
+
+Este paso simplemente requiere contar el número de elementos en la lista de requisitos de un curso, el cual se da en la línea que presenta al curso en el _input_. Por ejemplo, si se lee la línea `34 21 32 14` entonces el curso 34 debe ubicarse en `listas[3]`. Además, puede ser cómodo mantener el índice de `listas` en el que se encuentra el curso (en este caso 3) como información del nodo del curso, para que luego en el paso 3 este se pueda mover más fácilmente.
+
+Al terminar de leer el _input_, si este es válido, todos los cursos serán accesibles en alguna parte de `listas`, y todos tendrán el número que indica en qué parte de `listas` se encuentran.
+
+Como no es posible saber con anticipación cuál es el máximo número de requisitos que llegará a contener un curso, la variable `listas` se inicializa con el máximo imaginable: El número de cursos menos 1.
+
+## Paso 3
+
+En esta parte, se debe obtener algún curso de `listas[0]`[^1] siempre que haya alguno. Se imprime su id y luego se itera en la lista de los cursos que provee. Cada uno de estos cursos se saca de su lugar en `listas[k]` y se mueve a `listas[k-1]`, de forma que cuando sea hayan tomado todos sus requisitos, el curso se encuentre en `listas[0]`.
+
+Para mover el curso, es necesario eliminarlo de `listas[k]` y luego añadirlo a `listas[k-1]`. Como esta es una operación muy común, es conveniente que para hacerla más rápida se sigan dos consejos:
+1. Guardar en cada curso una variable **k** que indique en qué parte de `listas` se encuentra, para no tener que buscar por todo `listas` cada vez que se elimina un curso.
+2. Que los cursos estén guardados en una lista doblemente enlazada, de forma que eliminar uno sea una operación $O(1)$.
+
+[^1]: El primero, ya que es el más fácil
+
+## Paso 4
+
+No son requeridos más detalles en realidad.
+
 # Implementación
+
+## Paso 1
+
+## Paso 2
+
+## Paso 3
+
+## Paso 4
 
 # Resultados y conclusiones
 
