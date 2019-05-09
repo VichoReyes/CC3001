@@ -50,11 +50,23 @@ Para mover el curso, es necesario eliminarlo de `listas[k]` y luego añadirlo a 
 1. Guardar en cada curso una variable **k** que indique en qué parte de `listas` se encuentra, para no tener que buscar por todo `listas` cada vez que se elimina un curso.
 2. Que los cursos estén guardados en una lista doblemente enlazada, de forma que eliminar uno sea una operación $O(1)$.
 
-[^1]: El primero, ya que es el más fácil
+[^1]: El primero, ya que es el más fácil de obtener.
 
 ## Paso 4
 
-No son requeridos más detalles en realidad.
+Como se menciona arriba, se debe eliminar el curso recién impreso de `listas[0]` y repetir la operación del paso 3 hasta que no queden más cursos, lo cual si el _input_ es válido debería ocurrir cuando `listas[0]` es una lista vacía.
+
+## Estructuras de Datos
+
+Por las razones mencionadas en la subsección del paso 3, es conveniente que el arreglo `listas` contenga listas doblemente enlazadas. En cambio, las listas de cursos que cada curso provee no requieren ser eliminadas, por lo que las listas pueden ser de un solo enlace sin perjudicar el rendimiento del programa.
+
+Se debe mencionar que en el paso 3 es necesario eliminar los cursos de una lista doblemente enlazada, es necesario guardar no solamente los cursos sino que los nodos de esta lista que contienen los cursos, ya que para eliminarlos es necesario tener punteros al próximo elemento y el anterior. Por lo tanto, hay dos posibles formas de enfrentar este problema:
+
+1. Que en la lista que cada curso `c` tiene que contiene los cursos para los que `c` es requisito, se guarden los nodos de los cursos con respecto a `listas`.
+
+2. Que cada elemento de clase `Curso` contenga de por sí información sobre los nodos siguiente y anterior.
+
+Por simplicidad, se eligió la segunda opción, aunque en un proyecto real convendría más la primera ya que mantiene mejor separados los distintos problemas y por lo tanto deriva en código más fácil de mantener.
 
 # Implementación
 
