@@ -1,3 +1,5 @@
+
+// Tarea 4 de Vicente Reyes
 import java.util.Scanner;
 
 public class Main {
@@ -8,6 +10,10 @@ public class Main {
 
         Nodo arbol = generaArbol(postorden);
         String preorden = generaPreorden(arbol);
+        // Si este println se cambia por un print, calza
+        // mejor con los casos de prueba ya que no tienen
+        // fin de línea, pero queda más feo al correr varias
+        // veces el programa
         System.out.println(preorden);
     }
 

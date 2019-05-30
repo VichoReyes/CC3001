@@ -104,6 +104,7 @@ done | md5sum
 # y luego, para ver los outputs que se buscaban
 for i in $(ls output); do
     # awk 1 añade el salto de línea que falta
+    # más información en las líneas 13-16 del programa
     awk 1 output/$i;
 done | md5sum
 ```
@@ -125,6 +126,10 @@ public class Main {
 
         Nodo arbol = generaArbol(postorden);
         String preorden = generaPreorden(arbol);
+        // Si este println se cambia por un print, calza
+        // mejor con los casos de prueba ya que no tienen
+        // fin de línea, pero queda más feo al correr varias
+        // veces el programa
         System.out.println(preorden);
     }
 
