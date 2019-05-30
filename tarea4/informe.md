@@ -1,3 +1,8 @@
+---
+header-includes:
+    - \usepackage{setspace}
+---
+
 # Introducción
 
 Esta tarea busca evaluar la construcción y manipulación de árboles binarios.
@@ -52,7 +57,108 @@ Al terminar de leer el string, si éste es un recorrido en postorden válido, se
 
 Es conveniente implementar la pila usando una lista enlazada ya que ello permite que la pila no tenga un límite de tamaño apreciable.
 
+## Generación del Preorden
+
+La representación en preorden de un árbol se puede generar fácilmente de forma recursiva, añadiendo partes a un string acumulador en cada llamada a la función.
+
+Se debe añadir el valor del nodo antes que nada, y luego añadir el preorden de las ramas izquierda y derecha respectivamente. En caso de que se encuentre un árbol `null`, se debe añadir un punto.
+
 # Implementación
 
+Para generar el árbol se creó una clase `Pila` (implementada con listas enlazadas) con las funciones `push` y `pop`.
+También se escribió la función `vacia` pero no fue necesario usarla, ya que al generar un árbol basado en un postorden válido usando el algoritmo descrito en [Generación del Árbol], se garantiza que cada vez que se quiera usar `pop` haya un elemento en la pila.
+Para una solución más robusta del problema, sí sería necesario usar `vacia` para evitar errores del tipo `NullPointerException` cuando el _input_ no es un postorden válido.
+
+Luego, creada la clase `Pila`, se separan los elementos del _input_ y se crea el árbol correspondiente siguiendo las instrucciones de [Generación del Árbol].
+
+Una vez obtenido el árbol y en particular su raíz, la generación del preorden se implementó con una función recursiva directa de la descripción dada en [Generación del Preorden].
 
 # Anexo: Código
+
+\small
+
+```java
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        Scanner sc = new Scanner(System.in);
+        String postorden = sc.nextLine();
+        sc.close();
+
+        Nodo arbol = generaArbol(postorden);
+        String preorden = generaPreorden(arbol);
+        System.out.println(preorden);
+    }
+
+    static Nodo generaArbol(String postorden) {
+        Pila pila = new Pila();
+        String[] elementos = postorden.split(" ");
+        for (String s : elementos) {
+            if (s.equals(".")) {
+                pila.push(null);
+            } else {
+                Nodo der = pila.pop();
+                Nodo izq = pila.pop();
+                pila.push(new Nodo(s, izq, der));
+            }
+        }
+        return pila.pop();
+    }
+
+    static String generaPreorden(Nodo raiz) {
+        return preordenHelper(raiz, "").substring(1);
+    }
+
+    static String preordenHelper(Nodo n, String acum) {
+        if (n == null) {
+            return acum + " .";
+        } else {
+            acum += " " + n.val;
+            acum = preordenHelper(n.izq, acum);
+            acum = preordenHelper(n.der, acum);
+            return acum;
+        }
+    }
+}
+
+class Nodo {
+    String val;
+    Nodo izq;
+    Nodo der;
+
+    public Nodo(String valor, Nodo izquierda, Nodo derecha) {
+        val = valor;
+        izq = izquierda;
+        der = derecha;
+    }
+}
+
+class Pila {
+    private Lista pila;
+
+    Nodo pop() {
+        Nodo ret = pila.valor;
+        pila = pila.sgte;
+        return ret;
+    }
+
+    void push(Nodo n) {
+        pila = new Lista(n, pila);
+    }
+
+    boolean vacia() {
+        return pila == null;
+    }
+
+    class Lista {
+        Nodo valor;
+        Lista sgte;
+
+        public Lista(Nodo valor, Lista sgte) {
+            this.valor = valor;
+            this.sgte = sgte;
+        }
+    }
+}
+```
