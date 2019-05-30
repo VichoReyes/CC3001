@@ -73,6 +73,43 @@ Luego, creada la clase `Pila`, se separan los elementos del _input_ y se crea el
 
 Una vez obtenido el árbol y en particular su raíz, la generación del preorden se implementó con una función recursiva directa de la descripción dada en [Generación del Preorden].
 
+# Análisis de Resultados
+
+Se probó el código con los casos de prueba entregados en u-cursos.
+A continuación se presenta una tabla con algunos de los
+_inputs_ y _outputs_ correspondientes, generados por el programa.
+
+\tiny
+| **Input**                                           | **Output**                                          |
+| --------------------------------------------------- | --------------------------------------------------- |
+| `. . . E D . B . . C A`                             | `A B D . E . . . C . .`                             |
+| `. . D . . E B . . F . . G C A`                     | `A B D . . E . . C F . . G . .`                     |
+| `. . . A E . . . B F I . . . . L C G . . . D H J K` | `K I E . A . . F . B . . J G . C . L . . H . D . .` |
+| `. . O . L . L . E . . D . L . R . O . W H`         | `H E L L O . . . . . W O R L D . . . . . .`         |
+| `. . A . . E . K L . . E . S . A O`                 | `O L A . . K E . . . A S E . . . .`                 |
+| `.`                                                 | `.`                                                 |
+\normalsize
+
+Si se revisan los _outputs_ entregados, se verá que son casi los mismos,
+la única diferencia es que los generados por el programa tienen un fin de línea.
+
+Nota: Para revisar esto, se puede correr el siguiente código en una carpeta en que contiene la carpeta `input`, la carpeta `output` y los archivos `.class` generados por `javac Main.java`.
+
+```bash
+# para ver los outputs generados por el programa
+for i in $(ls input); do
+    java Main <input/$i;
+done | md5sum
+
+# y luego, para ver los outputs que se buscaban
+for i in $(ls output); do
+    # awk 1 añade el salto de línea que falta
+    awk 1 output/$i;
+done | md5sum
+```
+
+Como ambos scripts generan el mismo checksum, los _outputs_ están correctos.
+
 # Anexo: Código
 
 \small
