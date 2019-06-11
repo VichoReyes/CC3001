@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Arboles",
+            "request": "launch",
+            "mainClass": "Arboles",
+            "projectName": "tarea4 (2)"
+        }
+    ]
+}
