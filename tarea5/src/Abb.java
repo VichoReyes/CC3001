@@ -3,8 +3,9 @@
  */
 public class Abb {
 	public static Nodo insertar(Nodo a, double x) {
+		a = Nodo.clonar(a);
 		a = insertarHelper(a, x);
-		return clonar(a);
+		return a;
 	}
 
 	private static Nodo insertarHelper(Nodo a, double x) {
@@ -23,11 +24,4 @@ public class Abb {
 		}
 	}
 
-	private static Nodo clonar(Nodo a) {
-		if (a instanceof NodoExt) {
-			return a;
-		}
-		NodoInt b = (NodoInt) a;
-		return new NodoInt(clonar(b.izq), b.info, clonar(b.der));
-	}
 }

@@ -4,53 +4,60 @@
 public class Splay {
 
     public static Nodo insertar(Nodo a, double x) {
-        return insertarHelper(x, a, null, null);
+        Nodo c = Nodo.clonar(a);
+        return insertarHelper(x, c, null, null);
     }
 
     public static Nodo insertarHelper(double x, Nodo k, NodoInt p, NodoInt a) {
         if (k instanceof NodoExt) {
-            if (p == null) {
-                return new NodoInt(Nodo.nulo, x, Nodo.nulo);
-            } else if (p.info > x) {
-                p.izq = new NodoInt(Nodo.nulo, x, Nodo.nulo);
-                return p.izq;
-            } else {
-                p.der = new NodoInt(Nodo.nulo, x, Nodo.nulo);
-                return p.izq;
-            }
+            return new NodoInt(Nodo.nulo, x, Nodo.nulo);
         }
         NodoInt b = (NodoInt) k;
         if (x < b.info) {
-            insertarHelper(x, b.izq, b, p);
+            b.izq = insertarHelper(x, b.izq, b, p);
             return splay((NodoInt) b.izq, b, p);
         } else if (x > b.info) {
-            insertarHelper(x, b.der, b, p);
+            b.der = insertarHelper(x, b.der, b, p);
             return splay((NodoInt) b.der, b, p);
-        } else
+        } else {
             return b; // ignoramos insercion si es llave repetida
+            // return splay(b, p, a);
+        }
     }
 
     private static NodoInt splay(NodoInt k, NodoInt p, NodoInt a) {
         if (p == null)
             return k;
         if (a == null) {
-            if (p.der instanceof NodoInt && eqInfo(k, (NodoInt) p.der))
-                k = new NodoInt(new NodoInt(p.izq, p.info, k.izq), k.info, k.der);
-            else
-                k = new NodoInt(k.izq, k.info, new NodoInt(k.der, p.info, p.der));
+            if (eqInfo(k, p.der)) {
+                p.der = k.izq;
+                k.izq = p;
+            } else {
+                p.izq = k.der;
+                k.der = p;
+            }
             return k;
         }
-        if (a.izq instanceof NodoInt && eqInfo(k, (NodoInt) ((NodoInt) a.izq).der)) {
-            return new NodoInt(new NodoInt(p.izq, p.info, k.izq), k.info, new NodoInt(k.der, a.info, a.der));
-        }
-        if (a.der instanceof NodoInt && eqInfo(k, (NodoInt) ((NodoInt) a.der).izq)) {
-            return new NodoInt(new NodoInt(k.izq, a.info, a.izq), k.info, new NodoInt(p.der, p.info, k.der));
-        }
-        if (a.izq instanceof NodoInt && eqInfo(k, (NodoInt) ((NodoInt) a.izq).izq)) {
-            return new NodoInt(k.izq, k.info, new NodoInt(k.der, p.info, new NodoInt(p.der, a.info, a.der)));
-        }
-        if (a.izq instanceof NodoInt && eqInfo(k, (NodoInt) ((NodoInt) a.der).der)) {
-            return new NodoInt(new NodoInt(new NodoInt(p.izq, a.info, a.izq), p.info, k.izq), k.info, k.der);
+        if (a.izq instanceof NodoInt && eqInfo(k, ((NodoInt) a.izq).der)) {
+            p.der = k.izq;
+            a.izq = k.der;
+            k.izq = p;
+            k.der = a;
+        } else if (a.der instanceof NodoInt && eqInfo(k, ((NodoInt) a.der).izq)) {
+            p.izq = k.der;
+            a.der = k.izq;
+            k.der = p;
+            k.izq = a;
+        } else if (a.izq instanceof NodoInt && eqInfo(k, ((NodoInt) a.izq).izq)) {
+            p.izq = k.der;
+            a.izq = p.der;
+            p.der = a;
+            k.der = p;
+        } else if (a.izq instanceof NodoInt && eqInfo(k, ((NodoInt) a.der).der)) {
+            p.der = k.izq;
+            a.der = p.izq;
+            p.izq = a;
+            k.izq = p;
         }
         return k;
     }
