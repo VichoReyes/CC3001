@@ -27,7 +27,7 @@ public class Arboles extends Panel {
 		canvases.setLayout(new GridLayout(1, 3));
 		canvas1 = new MiCanvas(a1 = new Arbol("ABB"), Color.lightGray);
 		canvas2 = new MiCanvas(a2 = new Arbol("AVL"), Color.orange);
-		canvas3 = new MiCanvas(a3 = new Arbol("Air"), Color.cyan);
+		canvas3 = new MiCanvas(a3 = new Arbol("Splay"), Color.cyan);
 		canvases.add(canvas1);
 		canvases.add(canvas2);
 		canvases.add(canvas3);
@@ -61,7 +61,7 @@ public class Arboles extends Panel {
 	public static void insertall(double llave) {
 		a1.raiz = Abb.insertar(a1.raiz, llave);
 		a2.raiz = Avl.insertar(a2.raiz, llave);
-		a3.raiz = Air.insertar(a3.raiz, llave);
+		a3.raiz = Splay.insertar(a3.raiz, llave);
 		canvas1.repaint();
 		canvas2.repaint();
 		canvas3.repaint();
