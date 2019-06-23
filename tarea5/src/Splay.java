@@ -13,19 +13,20 @@ public class Splay {
         return Nodo.clonar(a);
     }
 
-    private static void insertarHelper(double x, Nodo k) {
+    private static NodoInt insertarHelper(double x, Nodo k) {
         if (k instanceof NodoExt) {
             k = new NodoInt(Nodo.nulo, x, Nodo.nulo);
             paraRotar.push((NodoInt) k);
-            return;
+            return (NodoInt) k;
         }
         NodoInt b = (NodoInt) k;
         paraRotar.push(b);
         if (x < b.info) {
-            insertarHelper(x, b.izq);
+            b.izq = insertarHelper(x, b.izq);
         } else if (x > b.info) {
-            insertarHelper(x, b.der);
+            b.der = insertarHelper(x, b.der);
         }
+        return b;
     }
 
     private static NodoInt splay() {
