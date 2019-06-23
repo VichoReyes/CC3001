@@ -10,7 +10,7 @@ public class Splay {
         paraRotar = new Stack<NodoInt>();
         insertarHelper(x, a);
         a = splay();
-        return Nodo.clonar(a);
+        return clonar(a);
     }
 
     private static NodoInt insertarHelper(double x, Nodo k) {
@@ -91,5 +91,13 @@ public class Splay {
         if (x instanceof NodoExt || y instanceof NodoExt)
             return false;
         return ((NodoInt) x).info == ((NodoInt) y).info;
+    }
+
+    public static Nodo clonar(Nodo a) {
+        if (a instanceof NodoExt) {
+            return a;
+        }
+        NodoInt b = (NodoInt) a;
+        return new NodoInt(clonar(b.izq), b.info, clonar(b.der));
     }
 }
