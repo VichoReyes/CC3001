@@ -64,7 +64,7 @@ public class Splay {
                 a.izq = p.der;
                 p.der = a;
                 k.der = p;
-            } else if (a.izq instanceof NodoInt && eqInfo(k, ((NodoInt) a.der).der)) {
+            } else if (a.der instanceof NodoInt && eqInfo(k, ((NodoInt) a.der).der)) {
                 p.der = k.izq;
                 a.der = p.izq;
                 p.izq = a;
